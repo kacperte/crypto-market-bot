@@ -26,7 +26,7 @@ def stream():
             # publish to redis information about new token
             redis.publish('token_id', new_coin)
             # post to db inforamtion
-            add_to_new_token_db(session, new_coin)
+            add_to_new_token_db(session, instId=new_coin, market='okex')
             # update the following variables with new data
             list_of_coins = requests.get(url).json()['data'][0]['online']
             len_list_of_coins = len(requests.get(url).json()['data'][0]['online'])

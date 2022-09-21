@@ -11,6 +11,7 @@ load_dotenv()
 APIKEY = getenv("APIKEY")
 APISECRET = getenv("APISECRET")
 PASS = getenv("PASS")
+BASEURL = getenv("BASEURL")
 
 # init Session
 session = SessionLocal()
@@ -18,8 +19,8 @@ session = SessionLocal()
 
 class SellAsset(OkexBot):
 
-    def __init__(self, APIKEY, APISECRET, PASS):
-        super().__init__(APIKEY, APISECRET, PASS)
+    def __init__(self, coin_id: str, APIKEY, APISECRET, PASS, BASEURL):
+        super().__init__(APIKEY, APISECRET, PASS, BASEURL)
         self.client = redis.Redis(host='localhost', port=6379)
 
     def sell_position(self, coin_id, percentage_of_sales):
@@ -54,7 +55,8 @@ if __name__ == "__main__":
                 SellAsset(
                     APISECRET=APISECRET,
                     APIKEY=APIKEY,
-                    PASS=PASS
+                    PASS=PASS,
+                    BASEURL=BASEURL
                 ).sell_position(
                     coin_id=parms[0],
                     percentage_of_sales=float(parms[1]),

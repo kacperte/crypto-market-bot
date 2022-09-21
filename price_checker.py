@@ -10,6 +10,7 @@ load_dotenv()
 APIKEY = getenv("APIKEY")
 APISECRET = getenv("APISECRET")
 PASS = getenv("PASS")
+BASEURL = getenv("BASEURL")
 
 # init Session
 session = SessionLocal()
@@ -17,8 +18,8 @@ session = SessionLocal()
 
 class PriceChecker(OkexBot):
     """The class inherits from OKEX Bot. If the price reaches the expected level, it triggers the sale"""
-    def __init__(self, APIKEY, APISECRET, PASS):
-        super().__init__(APIKEY, APISECRET, PASS)
+    def __init__(self, coin_id: str, APIKEY, APISECRET, PASS, BASEURL):
+        super().__init__(APIKEY, APISECRET, PASS, BASEURL)
         self.client = redis.Redis(host='localhost', port=6379)
         self.order_info = self.get_info_about_last_orders()[0]
         self.usdt_balance = self.get_balance('USDT')
@@ -43,6 +44,7 @@ class PriceChecker(OkexBot):
                     price=current_price,
                     instId=self.order_info['instId'],
                 )
+                break
             # condition to sell for losses
             elif current_price <= self.purchase_price * losses:
                 # publish to redis information to place new order - sell (token_id/volumen_profit)
@@ -58,6 +60,7 @@ class PriceChecker(OkexBot):
                     price=current_price,
                     instId=self.order_info['instId'],
                 )
+                break
 
 
 if __name__ == "__main__":
@@ -72,7 +75,8 @@ if __name__ == "__main__":
                 PriceChecker(
                     APISECRET=APISECRET,
                     APIKEY=APIKEY,
-                    PASS=PASS
+                    PASS=PASS,
+                    BASEURL=BASEURL
                 ).price_tracking(
                     profit=float(parms[0]),
                     losses=float(parms[1]),

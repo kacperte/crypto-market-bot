@@ -4,25 +4,15 @@ import hmac
 import requests
 import json
 from decimal import Decimal
-from dotenv import load_dotenv
-from os import getenv
-
-
-load_dotenv()
-
-# OKEX API credentials
-APIKEY = getenv("APIKEY")
-APISECRET = getenv("APISECRET")
-PASS = getenv("PASS")
 
 
 class OkexBot:
     """A bot to perform operations on OKEX"""
-    def __init__(self, APIKEY: str, APISECRET: str, PASS: str):
+    def __init__(self, APIKEY: str, APISECRET: str, PASS: str, baseURL: str):
         self.apikey = APIKEY
         self.apisecret = APISECRET
         self.password = PASS
-        self.baseURL = 'https://www.okex.com'
+        self.baseurl = baseURL
 
     # get a current price of token
     @staticmethod
